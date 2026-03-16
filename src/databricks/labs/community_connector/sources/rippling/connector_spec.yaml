@@ -1,0 +1,61 @@
+# Rippling Community Connector Spec
+# This file defines the specification for the connector including
+# connection parameters and allowlist options.
+
+# ============================================================================
+# Connection Parameters
+# These are provided when creating the Unity Catalog connection.
+# The Databricks UI reads this list to render the credential prompt form.
+# ============================================================================
+display_name: Rippling
+connection:
+  auth_methods:
+    - name: api_token
+      description: Authenticate with a static API token.
+      parameters:
+        - name: api_token
+          type: string
+          required: true
+          secret: true
+          description: >
+            API token generated from the Rippling admin console. Navigate to
+            Settings -> App Management -> API Access, then click Create API Key.
+            The token is sent as "Authorization: Bearer <api_token>" on every request.
+            Ensure the token has read scopes for all HR objects you intend to sync.
+
+    - name: oauth
+      description: Authenticate using OAuth 2.0 refresh token exchange.
+      parameters:
+        - name: client_id
+          type: string
+          required: true
+          description: OAuth application client ID from the Rippling developer console.
+
+        - name: client_secret
+          type: string
+          required: true
+          secret: true
+          description: OAuth application client secret from the Rippling developer console.
+
+        - name: refresh_token
+          type: string
+          required: true
+          secret: true
+          description: >
+            OAuth refresh token obtained from the authorization flow. The connector
+            exchanges this refresh token for a short-lived access token at runtime.
+
+  parameters:
+    - name: base_url
+      type: string
+      required: false
+      description: >
+        Rippling REST API base URL. Defaults to https://rest.ripplingapis.com.
+        Only override if your Rippling account uses a custom endpoint.
+
+# ============================================================================
+# External Options Allowlist
+# Table-specific options that can be passed through from the UC connection.
+# This connector has no table-specific connection options.
+# ============================================================================
+external_options_allowlist: ""
