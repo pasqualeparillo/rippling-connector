@@ -516,6 +516,7 @@ def register_lakeflow_source(spark):
     ########################################################
 
     BASE_URL = "https://rest.ripplingapis.com"
+    TOKEN_URL = "https://app.rippling.com/api/o/token/"
     DEFAULT_PAGE_SIZE = 100
     MAX_RETRIES = 5
     INITIAL_BACKOFF = 1.0
@@ -599,15 +600,51 @@ def register_lakeflow_source(spark):
 
         def __init__(self, options: dict[str, str]) -> None:
             super().__init__(options)
-            self._api_token = options["api_token"]
             self._base_url = options.get("base_url", BASE_URL)
+            self._access_token = self._resolve_access_token(options)
             self._session = requests.Session()
             self._session.headers.update({
-                "Authorization": f"Bearer {self._api_token}",
+                "Authorization": f"Bearer {self._access_token}",
                 "Content-Type": "application/json",
             })
             self._init_ts = datetime.now(timezone.utc).isoformat()
             self._schema_cache: dict[str, StructType] = {}
+
+        def _resolve_access_token(self, options: dict[str, str]) -> str:
+            """Resolve auth using either static api_token or OAuth refresh token flow."""
+            api_token = (options.get("api_token") or "").strip()
+            if api_token:
+                return api_token
+
+            client_id = (options.get("client_id") or "").strip()
+            client_secret = (options.get("client_secret") or "").strip()
+            refresh_token = (options.get("refresh_token") or "").strip()
+            if not (client_id and client_secret and refresh_token):
+                raise ValueError(
+                    "Provide either 'api_token' or OAuth credentials "
+                    "('client_id', 'client_secret', 'refresh_token')."
+                )
+
+            token_resp = requests.post(
+                TOKEN_URL,
+                data={
+                    "grant_type": "refresh_token",
+                    "refresh_token": refresh_token,
+                    "client_id": client_id,
+                    "client_secret": client_secret,
+                },
+                timeout=REQUEST_TIMEOUT,
+            )
+            if token_resp.status_code != 200:
+                raise ValueError(
+                    "Rippling OAuth token exchange failed: "
+                    f"{token_resp.status_code} {token_resp.text}"
+                )
+
+            access_token = (token_resp.json().get("access_token") or "").strip()
+            if not access_token:
+                raise ValueError("Rippling OAuth token exchange response did not include access_token")
+            return access_token
 
         # ------------------------------------------------------------------
         # HTTP helpers

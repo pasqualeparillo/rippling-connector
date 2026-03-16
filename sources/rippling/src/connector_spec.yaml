@@ -9,17 +9,43 @@
 # ============================================================================
 display_name: Rippling
 connection:
-  parameters:
+  auth_methods:
     - name: api_token
-      type: string
-      required: true
-      secret: true
-      description: >
-        API token generated from the Rippling admin console. Navigate to
-        Settings → App Management → API Access, then click Create API Key.
-        The token is sent as "Authorization: Bearer <api_token>" on every request.
-        Ensure the token has read scopes for all HR objects you intend to sync.
+      description: Authenticate with a static API token.
+      parameters:
+        - name: api_token
+          type: string
+          required: true
+          secret: true
+          description: >
+            API token generated from the Rippling admin console. Navigate to
+            Settings -> App Management -> API Access, then click Create API Key.
+            The token is sent as "Authorization: Bearer <api_token>" on every request.
+            Ensure the token has read scopes for all HR objects you intend to sync.
 
+    - name: oauth
+      description: Authenticate using OAuth 2.0 refresh token exchange.
+      parameters:
+        - name: client_id
+          type: string
+          required: true
+          description: OAuth application client ID from the Rippling developer console.
+
+        - name: client_secret
+          type: string
+          required: true
+          secret: true
+          description: OAuth application client secret from the Rippling developer console.
+
+        - name: refresh_token
+          type: string
+          required: true
+          secret: true
+          description: >
+            OAuth refresh token obtained from the authorization flow. The connector
+            exchanges this refresh token for a short-lived access token at runtime.
+
+  parameters:
     - name: base_url
       type: string
       required: false
