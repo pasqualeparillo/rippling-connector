@@ -30,4 +30,7 @@ packages = ["databricks.labs.community_connector.sources.rippling"]
 "databricks.labs.community_connector.sources.rippling" = "src"
 
 [tool.setuptools.package-data]
+"databricks.labs.community_connector.sources.rippling" = ["*.yaml", "*.json", "*.md"]
+
+[tool.setuptools.package-data]
 "*" = ["*.json", "*.md", "*.yaml"]

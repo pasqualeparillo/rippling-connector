@@ -1,65 +1,35 @@
-# rippling Community Connector Spec
+# Rippling Community Connector Spec
 # This file defines the specification for the connector including
 # connection parameters and allowlist options.
 
 # ============================================================================
 # Connection Parameters
 # These are provided when creating the Unity Catalog connection.
+# The Databricks UI reads this list to render the credential prompt form.
 # ============================================================================
 display_name: Rippling
 connection:
-  # Rippling supports two authentication methods:
-  #   1. OAuth 2.0 (preferred for partner/connector integrations)
-  #   2. API Token / Bearer (for internal or customer-built integrations)
-  auth_methods:
-    - name: oauth
-      description: >
-        Authenticate using OAuth 2.0 with a refresh token. The connector
-        exchanges the refresh token for a short-lived access token at runtime.
-        Obtain client_id and client_secret from the Rippling developer console,
-        then complete the OAuth authorization flow to retrieve the refresh_token.
-      parameters:
-        - name: client_id
-          type: string
-          required: true
-          description: >
-            OAuth application client ID from the Rippling developer console.
-
-        - name: client_secret
-          type: string
-          required: true
-          secret: true
-          description: >
-            OAuth application client secret from the Rippling developer console.
-
-        - name: refresh_token
-          type: string
-          required: true
-          secret: true
-          description: >
-            OAuth refresh token obtained after completing the authorization flow.
-            Used at runtime to exchange for a short-lived access token via
-            https://app.rippling.com/api/o/token/.
-
+  parameters:
     - name: api_token
+      type: string
+      required: true
+      secret: true
       description: >
-        Authenticate using a static API token (Bearer). Generate the token
-        from the Rippling admin console. The token inherits the permissions
-        of the creator.
-      parameters:
-        - name: api_token
-          type: string
-          required: true
-          secret: true
-          description: >
-            API token generated from the Rippling admin console. Sent as
-            "Authorization: Bearer <api_token>" on every request.
+        API token generated from the Rippling admin console. Navigate to
+        Settings → App Management → API Access, then click Create API Key.
+        The token is sent as "Authorization: Bearer <api_token>" on every request.
+        Ensure the token has read scopes for all HR objects you intend to sync.
+
+    - name: base_url
+      type: string
+      required: false
+      description: >
+        Rippling REST API base URL. Defaults to https://rest.ripplingapis.com.
+        Only override if your Rippling account uses a custom endpoint.
 
 # ============================================================================
 # External Options Allowlist
-# These table-specific options must be included in the externalOptionsAllowList
-# parameter of the UC connection to allow them to be passed through.
-# Use a comma-separated string of option names.
-# If no table-specific options are needed, set to empty string or omit.
+# Table-specific options that can be passed through from the UC connection.
+# This connector has no table-specific connection options.
 # ============================================================================
 external_options_allowlist: ""
