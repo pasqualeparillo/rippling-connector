@@ -40,3 +40,4 @@ htmlcov/
 # Credentials — never commit these
 tests/configs/dev_config.json
 configs/dev_config.json
+tests/unit/sources/rippling/configs/dev_config.json

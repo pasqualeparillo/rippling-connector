@@ -1,0 +1,19 @@
+{
+  "connection_name": "rippling-community",
+  "objects": [
+    { "table": { "source_table": "companies" } },
+    { "table": { "source_table": "custom_fields" } },
+    { "table": { "source_table": "departments" } },
+    { "table": { "source_table": "employment_types" } },
+    { "table": { "source_table": "leave_balances" } },
+    { "table": { "source_table": "leave_requests" } },
+    { "table": { "source_table": "leave_types" } },
+    { "table": { "source_table": "legal_entities" } },
+    { "table": { "source_table": "levels" } },
+    { "table": { "source_table": "teams" } },
+    { "table": { "source_table": "tracks" } },
+    { "table": { "source_table": "users" } },
+    { "table": { "source_table": "work_locations" } },
+    { "table": { "source_table": "workers" } }
+  ]
+}
