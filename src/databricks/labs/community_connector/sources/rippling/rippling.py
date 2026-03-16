@@ -398,8 +398,8 @@ class RipplingLakeflowConnect(LakeflowConnect):
             next_link = body.get("next_link")
             if not next_link:
                 break
-            # next_link is a relative path with query params baked in.
-            url = f"{self._base_url}{next_link}"
+            # next_link may be a full URL or a relative path.
+            url = next_link if next_link.startswith("http") else f"{self._base_url}{next_link}"
             params = {}
 
     def _paginate_offset(self, table_name: str) -> Iterator[dict]:
