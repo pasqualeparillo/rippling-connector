@@ -43,6 +43,7 @@ connection:
 # ============================================================================
 # External Options Allowlist
 # Table-specific options that can be passed through from the UC connection.
-# This connector has no table-specific connection options.
 # ============================================================================
-external_options_allowlist: ""
+external_options_allowlist:
+  - base_url
+  - api_version
